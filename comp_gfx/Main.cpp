@@ -18,13 +18,6 @@ const char* fragmentShaderSource = "#version 330 core\n"
 "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
 "}\n\0";
 
-//const char *fragmentShaderSrouce = "#version 330 core\n"
-//"out vec4 FragColor;\n"
-//"void main()\n"
-//"{\n"
-//"    FragColor = vec4(0.6f, 0.98f, 0.80f, 1.0f);\n"
-//"}\0";
-
 void framebuffer_size_callback(GLFWwindow* window, int w, int h)
 {
 	glViewport(0, 0, w, h);
@@ -75,7 +68,7 @@ int main() {
 		glGetShaderInfoLog(vertexShader, 512, NULL, log);
 		cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << log << endl;
 	}
-	unsigned int fragmentShader = glCreateShader(GL_VERTEX_SHADER);
+	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
 	glCompileShader(fragmentShader);
 	// check fragment shader compiled successfully
