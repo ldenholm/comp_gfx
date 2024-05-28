@@ -24,9 +24,34 @@ void framebuffer_size_callback(GLFWwindow* window, int w, int h)
 }
 
 float vertices[] = {
-	-0.5f, -0.5f, 0.0f,
-	0.5f, -0.5f, 0.0f,
-	0.0f, 0.5f, 0.0f
+	 0.5f,  0.5f, 0.0f,  // top right
+	 0.5f, -0.5f, 0.0f,  // bottom right
+	-0.5f, -0.5f, 0.0f,  // bottom left
+	-0.5f,  0.5f, 0.0f   // top left 
+};
+
+float myTestTri[] = {
+	-0.5f, 0.0f, 0.0f, // centre left  0
+	-0.5f, 0.5f, 0.0f, // top left  1
+	0.0f, 0.5f, 0.0f, // centre top  2
+	0.5f, 0.0f, 0.0f, // centre right  3
+	0.5f, 0.5f, 0.0f // top right 4
+	-0.5f, -0.5f, 0.0f, // bottom left 5
+	0.0f, -0.5f, 0.0f, // centre bottom 6
+	0.5f, -0.5f, 0.0f // bottom right 7
+	-0.25f, 0.25f, 0.0f // half left half top
+};
+
+unsigned int squareTri[] = {
+	0, 1, 2, // top left tri
+	2, 4, 3, // top right tri
+	0, 5, 6, // bot left tri
+	3, 7, 6 // bot right tri
+};
+
+unsigned int indices[] = {
+	0, 1, 3, // first tri
+	1, 2, 3 // second tri
 };
 
 int main() {
@@ -55,7 +80,7 @@ int main() {
 	glViewport(0, 0, 800, 600);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-	// setup vertex buffer and shader objects
+	// setup vertex buffer, element buffer, and shader objects
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER); // VAO;
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
 	glCompileShader(vertexShader);
@@ -78,6 +103,10 @@ int main() {
 		glGetShaderInfoLog(fragmentShader, 512, NULL, log);
 		cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << log << endl;
 	}
+
+	// create element buffer obj
+	unsigned int EBO;
+	glGenBuffers(1, &EBO);
 	
 	// init shader program
 	unsigned int shaderProgram = glCreateProgram();
@@ -101,7 +130,7 @@ int main() {
 	 the final argument instructs the gpu how to handle the data.
 	 static draw corresponds to data set once and reused many times.
 	 */
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
 	// setup vertex array and buffer objects
 	unsigned int VBO, VAO;
 	glGenVertexArrays(1, &VAO);
@@ -109,7 +138,9 @@ int main() {
 	// bind vertex array then bind vertex buffers and finally config vertex attributes
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(myTestTri), myTestTri, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(squareTri), squareTri, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	
@@ -127,7 +158,11 @@ int main() {
 		// draw triangle
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		// draw multiple tris specified in element buffer
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 
 		// check event loop and swap buffers
 		glfwSwapBuffers(window);
