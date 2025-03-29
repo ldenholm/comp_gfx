@@ -27,17 +27,36 @@ void framebuffer_size_callback(GLFWwindow* window, int w, int h)
 // viewport transforms these to screen-space coords.
 
 
+//float og_vertices[] = {
+//	 0.5f,  0.5f, 0.0f,  // top right
+//	 0.5f, -0.5f, 0.0f,  // bottom right
+//	-0.5f, -0.5f, 0.0f,  // bottom left
+//	-0.5f,  0.5f, 0.0f   // top left 
+//};
+
 float vertices[] = {
-	 0.5f,  0.5f, 0.0f,  // top right
-	 0.5f, -0.5f, 0.0f,  // bottom right
-	-0.5f, -0.5f, 0.0f,  // bottom left
-	-0.5f,  0.5f, 0.0f   // top left 
+	0.25f, 0.75f, 0.0f,
+	0.25f, 0.0f, 0.0f,
+	0.0f, 0.75f, 0.0f,
+	0.0f, 0.75f, 0.0f,
+	0.0f, 0.0f, 0.0f,
+	0.75f, -0.25f, 0.0f,
+	0.75f, 0.0f, 0.0f,
+	0.0f, -0.25f, 0.0f,
+
 };
 
 // we must draw triangle vertices counter clockwise
+//unsigned int og_topTris[] = {
+//	1, 0, 3,   // first triangle
+//	1, 3, 2    // second triangle
+//};
+
 unsigned int topTris[] = {
-	1, 0, 3,   // first triangle
-	1, 3, 2    // second triangle
+	1, 0, 2, // tri1
+	4, 1, 2, // tri2
+	4, 5, 6, // tri3
+	7, 5, 4 // tri4
 };
 
 
@@ -193,7 +212,7 @@ int main() {
 		//glUniform4f(vtxClrLoc, 0.0f, grnVal, 0.0f, 1.0f);
 		glBindVertexArray(VAO);
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 		
 		// RENDER VERTICES STORED IN SECOND PAIR OF (VAO, VBO)
