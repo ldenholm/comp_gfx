@@ -22,28 +22,20 @@ void framebuffer_size_callback(GLFWwindow* window, int w, int h)
 	glViewport(0, 0, w, h);
 }
 
-//float topTriVertices[] = {
-//	// positions       // colors
-//	-0.5f, 0.0f, 0.0f,  // centre left  0
-//	-0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // top left  1
-//	0.0f, 0.5f, 0.0f,  0.0f, 0.0f, 1.0f, // centre top  2
-//	0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, // centre right  3
-//	0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f // top right 4
-//};
-
 
 // Normalized Device Coordinates (NDC)
 // viewport transforms these to screen-space coords.
+
+
 float vertices[] = {
-	-0.5f, -0.5f, 0.0f, // left bot
-	 0.5f, -0.5f, 0.0f, // right bot
-	 0.0f,  0.5f, 0.0f // centre top
+	 0.5f,  0.5f, 0.0f,  // top right
+	 0.5f, -0.5f, 0.0f,  // bottom right
+	-0.5f, -0.5f, 0.0f,  // bottom left
+	-0.5f,  0.5f, 0.0f   // top left 
 };
-
-
-unsigned int topTris[] = {
-	0, 1, 2, // top left tri
-	2, 4, 3, // top right tri
+unsigned int topTris[] = {  // note that we start from 0!
+	0, 1, 3,   // first triangle
+	1, 2, 3    // second triangle
 };
 
 
@@ -195,22 +187,16 @@ int main() {
 		
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		// draw triangle
-		// dynamic coloring
-		//float time = glfwGetTime();
-		//float grnVal = (sin(time) / 2.0f) + 0.5f;
-		//int vtxClrLoc = glGetUniformLocation(shaderProgram, "ourColor");
 		glUseProgram(shaderProgram);
 		//glUniform4f(vtxClrLoc, 0.0f, grnVal, 0.0f, 1.0f);
 		glBindVertexArray(VAO);
-		// draw multiple tris specified in element buffer
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 		
 		// RENDER VERTICES STORED IN SECOND PAIR OF (VAO, VBO)
 		//glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
-		//glBindVertexArray(0);
+
 
 		// check event loop and swap buffers
 		glfwSwapBuffers(window);
