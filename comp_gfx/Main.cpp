@@ -3,23 +3,17 @@
 #include <iostream>
 #include "Input.h"
 
-using namespace std;
-
 const char* vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
-//"layout (location = 1) in vec3 aColor;\n"
-//"out vec4 ourColor;\n"
 "void main()\n"
 "{\n"
-"   vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-	//"ourColor = aColor;\n"
+"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
 "}\0";
+
 const char* fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
-//"uniform vec4 ourColor;\n"
 "void main()\n"
 "{\n"
-//"   FragColor = ourColor;\n"
 "FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
 "}\n\0";
 
@@ -54,6 +48,9 @@ unsigned int topTris[] = {
 
 
 int main() {
+
+	std::cout << "this is the char* shader source w comments in both: \n" << vertexShaderSource << std::endl << fragmentShaderSource << std::endl;
+
 	// I N I T  A N D  W I N D O W  S E T U P
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
@@ -65,7 +62,7 @@ int main() {
 	GLFWwindow* window = glfwCreateWindow(800, 600, "HelloWindow", NULL, NULL);
 	if (window == NULL)
 	{
-		cout << "Error creating window";
+		std::cout << "Error creating window";
 		glfwTerminate();
 		return -1;
 	}
@@ -75,7 +72,7 @@ int main() {
 	// Initialize GLAD
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-		cout << "Failed to init GLAD";
+		std::cout << "Failed to init GLAD";
 		return -1;
 	}
 
@@ -84,7 +81,7 @@ int main() {
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
 
-	// V E R T E X  S H A D E R //
+	// V E R T E X  S H A D E R  C O M P I L E//
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER); // VAO;
@@ -98,12 +95,12 @@ int main() {
 	if (!success)
 	{
 		glGetShaderInfoLog(vertexShader, 512, NULL, log);
-		cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << log << endl;
+		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << log << std::endl;
 	}
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
 
-	// F R A G M E N T  S H A D E R //
+	// F R A G M E N T  S H A D E R  C O M P I L E//
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
 	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -115,7 +112,7 @@ int main() {
 	if (!success)
 	{
 		glGetShaderInfoLog(fragmentShader, 512, NULL, log);
-		cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << log << endl;
+		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << log << std::endl;
 	}
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
@@ -134,7 +131,7 @@ int main() {
 	if (!success)
 	{
 		glGetProgramInfoLog(shaderProgram, 512, NULL, log);
-		cout << "ERROR::PROGRAM::SHADER::COMPILATION_FAILED\n" << log << endl;
+		std::cout << "ERROR::PROGRAM::SHADER::COMPILATION_FAILED\n" << log << std::endl;
 	}
 
 	// clean up resources
@@ -176,15 +173,15 @@ int main() {
 	// -------------------------------------
 	// -------------------------------------
 
-	// D R A W  S O M E T H I N G
+	// C O N F I G U R E  V E R T E X  A T T R I B U T E S
 	// -------------------------------------
 	// -------------------------------------
 	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	// color attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
+	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	//glEnableVertexAttribArray(1);
 
 	// R E N D E R I N G
 	// -----------------------------------------------------------------------------
@@ -200,19 +197,20 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		// draw triangle
 		// dynamic coloring
-		float time = glfwGetTime();
-		float grnVal = (sin(time) / 2.0f) + 0.5f;
-		int vtxClrLoc = glGetUniformLocation(shaderProgram, "ourColor");
+		//float time = glfwGetTime();
+		//float grnVal = (sin(time) / 2.0f) + 0.5f;
+		//int vtxClrLoc = glGetUniformLocation(shaderProgram, "ourColor");
 		glUseProgram(shaderProgram);
-		glUniform4f(vtxClrLoc, 0.0f, grnVal, 0.0f, 1.0f);
+		//glUniform4f(vtxClrLoc, 0.0f, grnVal, 0.0f, 1.0f);
 		glBindVertexArray(VAO);
 		// draw multiple tris specified in element buffer
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 		
 		// RENDER VERTICES STORED IN SECOND PAIR OF (VAO, VBO)
-		glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
+		//glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+		//glBindVertexArray(0);
 
 		// check event loop and swap buffers
 		glfwSwapBuffers(window);
