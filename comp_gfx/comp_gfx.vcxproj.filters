@@ -33,4 +33,9 @@
   <ItemGroup>
     <Text Include="Utility_Cmds.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\drawing_a_rectangle.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

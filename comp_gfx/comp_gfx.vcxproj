@@ -152,6 +152,9 @@
   <ItemGroup>
     <Text Include="Utility_Cmds.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\drawing_a_rectangle.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
