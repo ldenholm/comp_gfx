@@ -179,20 +179,27 @@ int main() {
 	// -------------------------------------
 	glBindVertexArray(VAO[0]);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(first2tris), first2tris, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
 	// -------------------------------------
 	// SECOND VERTEX BUFFER STORED IN VERTEX ARRAY
 	// -------------------------------------
-	
+	glBindVertexArray(VAO[1]);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(second2tris), second2tris, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0); // we can use 0 in 5th argument
+	// forcing opengl to attempt to resolve the stride size automatically.
+	glEnableVertexAttribArray(0);
 	// -------------------------------------
 
 	// E L E M E N T  B U F F E R
 	// -------------------------------------
 	// -------------------------------------
-	unsigned int EBO;
-	glGenBuffers(1, &EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(topTris), topTris, GL_STATIC_DRAW);
+	//unsigned int EBO;
+	//glGenBuffers(1, &EBO);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(topTris), topTris, GL_STATIC_DRAW);
 	// -------------------------------------
 	// -------------------------------------
 
@@ -200,8 +207,8 @@ int main() {
 	// -------------------------------------
 	// -------------------------------------
 	// operates on the GL_ARRAY_BUFFER target (currently VBO[0])
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	//glEnableVertexAttribArray(0);
 	// color attribute
 	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	//glEnableVertexAttribArray(1);
@@ -222,31 +229,28 @@ int main() {
 		//glUniform4f(vtxClrLoc, 0.0f, grnVal, 0.0f, 1.0f);
 		// draw with first VAO
 		glBindVertexArray(VAO[0]);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		// draw w second VAO
 		glBindVertexArray(VAO[1]);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		//glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
+		glBindVertexArray(0); // note this is a call to unbind
 		
 		// RENDER VERTICES STORED IN SECOND PAIR OF (VAO, VBO)
 		//glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
 
-
-		// free resources
-		glDeleteVertexArrays(2, VAO);
-		glDeleteBuffers(2, VBO);
-		glDeleteProgram(shaderProgram);
-
 		// check event loop and swap buffers
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-	}
-	// -----------------------------------------------------------------------------
-	// -----------------------------------------------------------------------------
 
+	}
+
+	// free resources
+	glDeleteVertexArrays(2, VAO);
+	glDeleteBuffers(2, VBO);
+	glDeleteProgram(shaderProgram);
 	// E N D
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
