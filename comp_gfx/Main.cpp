@@ -26,14 +26,6 @@ void framebuffer_size_callback(GLFWwindow* window, int w, int h)
 // Normalized Device Coordinates (NDC)
 // viewport transforms these to screen-space coords.
 
-
-//float og_vertices[] = {
-//	 0.5f,  0.5f, 0.0f,  // top right
-//	 0.5f, -0.5f, 0.0f,  // bottom right
-//	-0.5f, -0.5f, 0.0f,  // bottom left
-//	-0.5f,  0.5f, 0.0f   // top left 
-//};
-
 float vertices[] = {
 	0.25f, 0.75f, 0.0f,
 	0.25f, 0.0f, 0.0f,
@@ -43,14 +35,25 @@ float vertices[] = {
 	0.75f, -0.25f, 0.0f,
 	0.75f, 0.0f, 0.0f,
 	0.0f, -0.25f, 0.0f,
-
 };
 
-// we must draw triangle vertices counter clockwise
-//unsigned int og_topTris[] = {
-//	1, 0, 3,   // first triangle
-//	1, 3, 2    // second triangle
-//};
+float first2tris[] = {
+	0.25f, 0.0f, 0.0f,
+	0.25f, 0.75f, 0.0f,
+	0.0f, 0.75f, 0.0f,
+	0.0f, 0.0f, 0.0f,
+	0.25f, 0.0f, 0.0f,
+	0.0f, 0.75f, 0.0f,
+};
+
+float second2tris[] = {
+	0.0f, 0.0f, 0.0f,
+	0.75f, -0.25f, 0.0f,
+	0.75f, 0.0f, 0.0f,
+	0.0f, -0.25f, 0.0f,
+	0.75f, -0.25f, 0.0f,
+	0.0f, 0.0f, 0.0f,
+};
 
 unsigned int topTris[] = {
 	1, 0, 2, // tri1
@@ -172,10 +175,15 @@ int main() {
 	unsigned int VBO[2], VAO[2];
 	glGenVertexArrays(2, VAO);
 	glGenBuffers(2, VBO);
+	// FIRST VERTEX BUFFER STORED IN VERTEX ARRAY
+	// -------------------------------------
 	glBindVertexArray(VAO[0]);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	// -------------------------------------
+	// SECOND VERTEX BUFFER STORED IN VERTEX ARRAY
+	// -------------------------------------
+	
 	// -------------------------------------
 
 	// E L E M E N T  B U F F E R
@@ -191,7 +199,7 @@ int main() {
 	// C O N F I G U R E  V E R T E X  A T T R I B U T E S
 	// -------------------------------------
 	// -------------------------------------
-	// position attribute
+	// operates on the GL_ARRAY_BUFFER target (currently VBO[0])
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	// color attribute
@@ -212,14 +220,25 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(shaderProgram);
 		//glUniform4f(vtxClrLoc, 0.0f, grnVal, 0.0f, 1.0f);
+		// draw with first VAO
 		glBindVertexArray(VAO[0]);
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		// draw w second VAO
+		glBindVertexArray(VAO[1]);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		//glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 		
 		// RENDER VERTICES STORED IN SECOND PAIR OF (VAO, VBO)
 		//glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
 
+
+		// free resources
+		glDeleteVertexArrays(2, VAO);
+		glDeleteBuffers(2, VBO);
+		glDeleteProgram(shaderProgram);
 
 		// check event loop and swap buffers
 		glfwSwapBuffers(window);
