@@ -6,5 +6,6 @@ class Input
 
 public:
 	static void processInput(GLFWwindow* window);
+	//static int getMaxVertexAttributes();
 };
 

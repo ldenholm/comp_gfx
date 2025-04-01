@@ -14,14 +14,14 @@ const char* fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
 "void main()\n"
 "{\n"
-"FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"FragColor = vec4(0.02, 0.01, 0.91, 1.0);\n"
 "}\n\0";
 
 const char* secondFragShaderSrc = "#version 330 core\n"
 "out vec4 FragColor;\n"
 "void main()\n"
 "{\n"
-"FragColor = vec4(0.3f, 0.2f, 0.1f, 1.0f);\n"
+"FragColor = vec4(0.91, 0.01, 0.01, 1.0);\n"
 "}\n\0";
 
 void framebuffer_size_callback(GLFWwindow* window, int w, int h)
@@ -30,10 +30,12 @@ void framebuffer_size_callback(GLFWwindow* window, int w, int h)
 }
 
 
+
 // Normalized Device Coordinates (NDC)
 // viewport transforms these to screen-space coords.
 
-float vertices[] = {
+float vertices[] = 
+{
 	0.25f, 0.75f, 0.0f,
 	0.25f, 0.0f, 0.0f,
 	0.0f, 0.75f, 0.0f,
@@ -44,7 +46,8 @@ float vertices[] = {
 	0.0f, -0.25f, 0.0f,
 };
 
-float first2tris[] = {
+float first2tris[] = 
+{
 	0.25f, 0.0f, 0.0f,
 	0.25f, 0.75f, 0.0f,
 	0.0f, 0.75f, 0.0f,
@@ -53,7 +56,8 @@ float first2tris[] = {
 	0.0f, 0.75f, 0.0f,
 };
 
-float second2tris[] = {
+float second2tris[] = 
+{
 	0.0f, 0.0f, 0.0f,
 	0.75f, -0.25f, 0.0f,
 	0.75f, 0.0f, 0.0f,
@@ -62,17 +66,23 @@ float second2tris[] = {
 	0.0f, 0.0f, 0.0f,
 };
 
-unsigned int topTris[] = {
+unsigned int topTris[] = 
+{
 	1, 0, 2, // tri1
 	4, 1, 2, // tri2
 	4, 5, 6, // tri3
 	7, 5, 4 // tri4
 };
 
+void CycleColors()
+{
+	// todo: use sin() to update vertex colors each frame
+	//float r_pos = sin(glfwGetTime);
+}
 
-int main() {
 
-	std::cout << "this is the char* shader source w comments in both: \n" << vertexShaderSource << std::endl << fragmentShaderSource << std::endl;
+int main() 
+{
 
 	// I N I T  A N D  W I N D O W  S E T U P
 	// -----------------------------------------------------------------------------

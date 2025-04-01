@@ -155,6 +155,7 @@
   <ItemGroup>
     <Image Include="..\bigLTriangles.png" />
     <Image Include="..\drawing_a_rectangle.png" />
+    <Image Include="..\Resouces\drawing_a_rectangle.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

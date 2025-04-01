@@ -8,3 +8,4 @@ void Input::processInput(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, true);
 	}
 }
+

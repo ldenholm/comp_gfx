@@ -40,5 +40,8 @@
     <Image Include="..\bigLTriangles.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\Resouces\drawing_a_rectangle.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
