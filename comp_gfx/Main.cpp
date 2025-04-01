@@ -17,6 +17,13 @@ const char* fragmentShaderSource = "#version 330 core\n"
 "FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
 "}\n\0";
 
+const char* secondFragShaderSrc = "#version 330 core\n"
+"out vec4 FragColor;\n"
+"void main()\n"
+"{\n"
+"FragColor = vec4(0.3f, 0.2f, 0.1f, 1.0f);\n"
+"}\n\0";
+
 void framebuffer_size_callback(GLFWwindow* window, int w, int h)
 {
 	glViewport(0, 0, w, h);
@@ -97,7 +104,7 @@ int main() {
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
 
-	// V E R T E X  S H A D E R  C O M P I L E//
+	// V E R T E X  S H A D E R  C O M P I L E
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -116,13 +123,20 @@ int main() {
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
 
-	// F R A G M E N T  S H A D E R  C O M P I L E//
+	// F R A G M E N T  S H A D E R  C O M P I L E
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
 	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	unsigned int secondFragShader = glCreateShader(GL_FRAGMENT_SHADER);
+
+	//first 
 	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
 	glCompileShader(fragmentShader);
-	
+	//second
+	glShaderSource(secondFragShader, 1, &secondFragShaderSrc, NULL);
+	glCompileShader(secondFragShader);
+
+
 	// check fragment shader compiled successfully
 	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
 	if (!success)
@@ -132,16 +146,23 @@ int main() {
 	}
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
-	
+
 	
 	// S H A D E R  P R O G R A M  S E T U P
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
 	unsigned int shaderProgram = glCreateProgram();
+	unsigned int secondaryShaderProgram = glCreateProgram();
+
+	//first
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
 	glLinkProgram(shaderProgram);
-	
+	//second
+	glAttachShader(secondaryShaderProgram, vertexShader);
+	glAttachShader(secondaryShaderProgram, secondFragShader);
+	glLinkProgram(secondaryShaderProgram);
+
 	// check shader program attached & linked correctly
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
 	if (!success)
@@ -230,6 +251,10 @@ int main() {
 		// draw with first VAO
 		glBindVertexArray(VAO[0]);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
+		// use second shader
+		glUseProgram(secondaryShaderProgram);
 
 		// draw w second VAO
 		glBindVertexArray(VAO[1]);
