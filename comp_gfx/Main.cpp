@@ -2,27 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "Input.h"
-
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
-
-const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"FragColor = vec4(0.02, 0.01, 0.91, 1.0);\n"
-"}\n\0";
-
-const char* secondFragShaderSrc = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"FragColor = vec4(0.91, 0.01, 0.01, 1.0);\n"
-"}\n\0";
+#include "Shaders.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int w, int h)
 {
@@ -118,7 +98,7 @@ int main()
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+	glShaderSource(vertexShader, 1, &Shaders::vertexShaderSource, NULL);
 	glCompileShader(vertexShader);
 	
 	// check compile successful and capture logs.
@@ -140,10 +120,10 @@ int main()
 	unsigned int secondFragShader = glCreateShader(GL_FRAGMENT_SHADER);
 
 	//first 
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	glShaderSource(fragmentShader, 1, &Shaders::fragmentShaderSource, NULL);
 	glCompileShader(fragmentShader);
 	//second
-	glShaderSource(secondFragShader, 1, &secondFragShaderSrc, NULL);
+	glShaderSource(secondFragShader, 1, &Shaders::secondFragShaderSrc, NULL);
 	glCompileShader(secondFragShader);
 
 
