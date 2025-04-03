@@ -9,7 +9,23 @@ void framebuffer_size_callback(GLFWwindow* window, int w, int h)
 	glViewport(0, 0, w, h);
 }
 
+void color_cycle_green(unsigned int& shaderProgram)
+{
+	float t = glfwGetTime();
+	float green = (sin(2*t) / 2.0f) + 0.5f;
+	int vertexColorLoc = glGetUniformLocation(shaderProgram, "dynamicColor");
+	glUseProgram(shaderProgram);
+	glUniform4f(vertexColorLoc, 0.0f, green, 0.0f, 1.0f);
+}
 
+void color_cycle_red(unsigned int& shaderProgram)
+{
+	float t = glfwGetTime();
+	float freq = (sin(3.0f*t) / 1.0f) + 0.2f;
+	int vertexColorLoc = glGetUniformLocation(shaderProgram, "dynamicColor");
+	glUseProgram(shaderProgram);
+	glUniform4f(vertexColorLoc, (freq + 0.1f), (freq - 0.6f), (freq - 0.9f), 0.4f);
+}
 
 // Normalized Device Coordinates (NDC)
 // viewport transforms these to screen-space coords.
@@ -150,7 +166,7 @@ int main()
 	glLinkProgram(shaderProgram);
 	//second
 	glAttachShader(secondaryShaderProgram, vertexShader);
-	glAttachShader(secondaryShaderProgram, secondFragShader);
+	glAttachShader(secondaryShaderProgram, fragmentShader);
 	glLinkProgram(secondaryShaderProgram);
 
 	// check shader program attached & linked correctly
@@ -236,7 +252,9 @@ int main()
 		
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		glUseProgram(shaderProgram);
+		//glUseProgram(shaderProgram);
+		color_cycle_green(shaderProgram);
+		
 		//glUniform4f(vtxClrLoc, 0.0f, grnVal, 0.0f, 1.0f);
 		// draw with first VAO
 		glBindVertexArray(VAO[0]);
@@ -244,7 +262,8 @@ int main()
 
 
 		// use second shader
-		glUseProgram(secondaryShaderProgram);
+		color_cycle_red(secondaryShaderProgram);
+		//glUseProgram(secondaryShaderProgram);
 
 		// draw w second VAO
 		glBindVertexArray(VAO[1]);

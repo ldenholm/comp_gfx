@@ -38,10 +38,10 @@ namespace Shaders::Fragment {
 
 	const char* FragIOSrc = 
 		"#version 330 core\n"
-		"in vec4 vertexColor;\n"
+		"uniform vec4 dynamicColor;"
 		"out vec4 FragColor;\n"
 		"void main()\n"
 		"{\n"
-		"FragColor = vertexColor;\n"
+		"FragColor = dynamicColor;\n"
 		"}\n\0";
 }
