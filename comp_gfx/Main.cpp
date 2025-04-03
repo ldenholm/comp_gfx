@@ -98,7 +98,7 @@ int main()
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &Shaders::vertexShaderSource, NULL);
+	glShaderSource(vertexShader, 1, &Shaders::Vertex::vertexIOSrc, NULL);
 	glCompileShader(vertexShader);
 	
 	// check compile successful and capture logs.
@@ -120,10 +120,10 @@ int main()
 	unsigned int secondFragShader = glCreateShader(GL_FRAGMENT_SHADER);
 
 	//first 
-	glShaderSource(fragmentShader, 1, &Shaders::fragmentShaderSource, NULL);
+	glShaderSource(fragmentShader, 1, &Shaders::Fragment::FragIOSrc, NULL);
 	glCompileShader(fragmentShader);
 	//second
-	glShaderSource(secondFragShader, 1, &Shaders::secondFragShaderSrc, NULL);
+	glShaderSource(secondFragShader, 1, &Shaders::Fragment::FragIOSrc, NULL);
 	glCompileShader(secondFragShader);
 
 
