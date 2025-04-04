@@ -1,11 +1,12 @@
 #pragma once
 #include <glad/glad.h>
+#include <vector>
 
 namespace Shaders {
 	class Shaders {
 	public:
-		//template<typename T>
-		static GLuint compile_and_build_shader(const char* shaderSrcPath);
+		static GLuint compile_and_create_shader(GLenum shaderType, const char* shaderSrcPath);
+		static GLuint create_and_link_shader_program(std::vector<GLuint>& shaders);
 	};
 }
 
