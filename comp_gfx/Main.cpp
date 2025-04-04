@@ -110,12 +110,12 @@ int main()
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
 	GLuint vertexShader, fragShader;
-	Shaders::Shaders::compile_and_create_shader(GL_VERTEX_SHADER, "VertexIO.vs.glsl", vertexShader);
-	Shaders::Shaders::compile_and_create_shader(GL_FRAGMENT_SHADER, "FRAGIO.fs.glsl", fragShader);
+	Shaders::compile_and_create_shader(GL_VERTEX_SHADER, "VertexIO.vs.glsl", vertexShader);
+	Shaders::compile_and_create_shader(GL_FRAGMENT_SHADER, "FRAGIO.fs.glsl", fragShader);
 	std::vector<GLuint> shaders;
 	shaders.push_back(vertexShader);
 	shaders.push_back(fragShader);
-	GLuint shaderProg = Shaders::Shaders::create_and_link_shader_program(shaders);
+	GLuint shaderProg = Shaders::create_and_link_shader_program(shaders);
 
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------

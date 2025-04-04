@@ -8,7 +8,7 @@
 // // todo generalize this for use with geometry and fragment shaders
 // Reads shader from file, compiles shader, links 
 
-GLuint Shaders::Shaders::compile_and_create_shader(GLenum shaderType, const char* shaderSrcPath, GLuint& shader)
+GLuint Shaders::compile_and_create_shader(GLenum shaderType, const char* shaderSrcPath, GLuint& shader)
 {
 	std::cout << "provided path: " << shaderSrcPath << std::endl;
 	std::ifstream infile{ shaderSrcPath };
@@ -50,7 +50,7 @@ GLuint Shaders::Shaders::compile_and_create_shader(GLenum shaderType, const char
 	return shader;
 }
 
-GLuint Shaders::Shaders::create_and_link_shader_program(std::vector<GLuint>& shaders)
+GLuint Shaders::create_and_link_shader_program(std::vector<GLuint>& shaders)
 {
 	int success = 0;
 	char log[512];
