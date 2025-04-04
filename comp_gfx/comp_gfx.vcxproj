@@ -146,6 +146,7 @@
     <ClCompile Include="..\glad.c" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Shaders.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shaders.h" />
@@ -158,6 +159,10 @@
     <Image Include="..\bigLTriangles.png" />
     <Image Include="..\drawing_a_rectangle.png" />
     <Image Include="..\Resouces\drawing_a_rectangle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FragIO.fs.glsl" />
+    <None Include="VertexIO.vs.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
