@@ -92,13 +92,6 @@ unsigned int topTris[] =
 	7, 5, 4 // tri4
 };
 
-void CycleColors()
-{
-	// todo: use sin() to update vertex colors each frame
-	//float r_pos = sin(glfwGetTime);
-}
-
-
 int main() 
 {
 	// I N I T  A N D  W I N D O W  S E T U P
@@ -130,73 +123,21 @@ int main()
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
-
-	// V E R T E X  S H A D E R  C O M P I L E
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
-	//unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	//glShaderSource(vertexShader, 1, &vertexIOSrc, NULL);
-	//glCompileShader(vertexShader);
-	//
-	//// check compile successful and capture logs.
-	int success;
-	char log[512];
-	//glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	//if (!success)
-	//{
-	//	glGetShaderInfoLog(vertexShader, 512, NULL, log);
-	//	std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << log << std::endl;
-	//}
-	// -----------------------------------------------------------------------------
-	// -----------------------------------------------------------------------------
-
-	// F R A G M E N T  S H A D E R  C O M P I L E
-	// -----------------------------------------------------------------------------
-	// -----------------------------------------------------------------------------
-	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	unsigned int secondFragShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-	//first 
-	glShaderSource(fragmentShader, 1, &FragIOSrc, NULL);
-	glCompileShader(fragmentShader);
-	//second
-	glShaderSource(secondFragShader, 1, &FragIOSrc, NULL);
-	glCompileShader(secondFragShader);
-
-
-	// check fragment shader compiled successfully
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(fragmentShader, 512, NULL, log);
-		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << log << std::endl;
-	}
-	// -----------------------------------------------------------------------------
-	// -----------------------------------------------------------------------------
+	
 
 	
-	// S H A D E R  P R O G R A M  S E T U P
+	// S H A D E R  C O M P I L E  A N D  P R O G R A M  S E T U P
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
-	//unsigned int shaderProgram = glCreateProgram();
-	//unsigned int secondaryShaderProgram = glCreateProgram();
-
-	//first
-	GLuint vertexShader = Shaders::Shaders::compile_and_create_shader(GL_VERTEX_SHADER, "VertexIO.vs.glsl");
-	GLuint fragShader = Shaders::Shaders::compile_and_create_shader(GL_FRAGMENT_SHADER, "FRAGIO.fs.glsl");
+	GLuint vertexShader, fragShader;
+	Shaders::Shaders::compile_and_create_shader(GL_VERTEX_SHADER, "VertexIO.vs.glsl", vertexShader);
+	Shaders::Shaders::compile_and_create_shader(GL_FRAGMENT_SHADER, "FRAGIO.fs.glsl", fragShader);
 	std::vector<GLuint> shaders;
 	shaders.push_back(vertexShader);
 	shaders.push_back(fragShader);
 	GLuint shaderProg = Shaders::Shaders::create_and_link_shader_program(shaders);
-	//glAttachShader(secondaryShaderProgram, vertexShader);
-	//glAttachShader(secondaryShaderProgram, fragmentShader);
-	//glLinkProgram(secondaryShaderProgram);
-
-
-
-	// clean up resources
-	//glDeleteShader(vertexShader);
-	//glDeleteShader(fragmentShader);
 
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
@@ -269,28 +210,24 @@ int main()
 		
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		//glUseProgram(shaderProgram);
-		color_cycle_green(shaderProg);
 		
-		//glUniform4f(vtxClrLoc, 0.0f, grnVal, 0.0f, 1.0f);
+		
+		color_cycle_green(shaderProg);
+
 		// draw with first VAO
 		glBindVertexArray(VAO[0]);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-
-		// use second shader
 		color_cycle_red(shaderProg);
-		//glUseProgram(secondaryShaderProgram);
+		
 
 		// draw w second VAO
 		glBindVertexArray(VAO[1]);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		//glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+
 		glBindVertexArray(0); // note this is a call to unbind
 		
-		// RENDER VERTICES STORED IN SECOND PAIR OF (VAO, VBO)
-		//glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
 
 		// check event loop and swap buffers
 		glfwSwapBuffers(window);
@@ -307,6 +244,4 @@ int main()
 	// -----------------------------------------------------------------------------
 	glfwTerminate();
 	return 0;
-	// -----------------------------------------------------------------------------
-	// -----------------------------------------------------------------------------
 }
