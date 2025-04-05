@@ -3,6 +3,8 @@
 #include <iostream>
 #include "Input.h"
 #include "Shaders.h"
+#include "glm/glm.hpp"
+
 
 void framebuffer_size_callback(GLFWwindow* window, int w, int h)
 {
@@ -25,6 +27,24 @@ void color_cycle_red(unsigned int& shaderProgram)
 	int vertexColorLoc = glGetUniformLocation(shaderProgram, "dynamicColor");
 	glUseProgram(shaderProgram);
 	glUniform4f(vertexColorLoc, (freq + 0.1f), (freq - 0.6f), (freq - 0.9f), 0.4f);
+}
+
+void translate(unsigned int& shaderProgram)
+{
+	static float scale = 0.0f;
+	static float delta = 0.005f;
+	scale += delta;
+	if ((scale >= 0.3f) || (scale <= -0.6f))
+	{
+		delta *= -1.0f;
+	}
+	glm::mat4 translationMatrix = glm::mat4(1.0f);
+	translationMatrix[0][3] = scale * 2; // x axis translation
+	translationMatrix[1][3] = scale; // y axis translation
+	GLint gTranslationLocation = glGetUniformLocation(shaderProgram, "gTranslation");
+	glUseProgram(shaderProgram);
+	glUniformMatrix4fv(gTranslationLocation, 1, GL_FALSE, &translationMatrix[0][0]);
+
 }
 
 // Normalized Device Coordinates (NDC)
@@ -101,10 +121,6 @@ int main()
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
-	// -----------------------------------------------------------------------------
-	// -----------------------------------------------------------------------------
-	
-
 	
 	// S H A D E R  C O M P I L E  A N D  P R O G R A M  S E T U P
 	// -----------------------------------------------------------------------------
@@ -112,104 +128,107 @@ int main()
 	GLuint vertexShader, fragShader;
 	Shaders::compile_and_create_shader(GL_VERTEX_SHADER, "VertexIO.vs.glsl", vertexShader);
 	Shaders::compile_and_create_shader(GL_FRAGMENT_SHADER, "FRAGIO.fs.glsl", fragShader);
+	//Shaders::compile_and_create_shader(GL_VERTEX_SHADER, "Translator.vs.glsl", transShader);
 	std::vector<GLuint> shaders;
 	shaders.push_back(vertexShader);
 	shaders.push_back(fragShader);
+	//shaders.push_back(transShader);
 	GLuint shaderProg = Shaders::create_and_link_shader_program(shaders);
 
-	// -----------------------------------------------------------------------------
-	// -----------------------------------------------------------------------------
-	
-	// B U F F E R  O B J E C T S  S E T U P
-	// -----------------------------------------------------------------------------
-	// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
-	 /*
-	 copy vertex data to buffer memory
-	 the final argument instructs the gpu how to handle the data.
-	 static draw corresponds to data set once and reused many times.
-	 */
+// B U F F E R  O B J E C T S  S E T U P
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
-	// V E R T E X  B U F F E R
-	// -------------------------------------
-	// -------------------------------------
-	// Exercise: create 2 VAOs and VBOs at once.
-	// unsigned int VBO, VAO, VBO_second, VAO_second;
-	unsigned int VBO[2], VAO[2];
-	glGenVertexArrays(2, VAO);
-	glGenBuffers(2, VBO);
-	// FIRST VERTEX BUFFER STORED IN VERTEX ARRAY
-	// -------------------------------------
+ /*
+ copy vertex data to buffer memory
+ the final argument instructs the gpu how to handle the data.
+ static draw corresponds to data set once and reused many times.
+ */
+
+ // V E R T E X  B U F F E R
+ // -------------------------------------
+ // -------------------------------------
+ // Exercise: create 2 VAOs and VBOs at once.
+ // unsigned int VBO, VAO, VBO_second, VAO_second;
+unsigned int VBO[2], VAO[2];
+glGenVertexArrays(2, VAO);
+glGenBuffers(2, VBO);
+// FIRST VERTEX BUFFER STORED IN VERTEX ARRAY
+// -------------------------------------
+glBindVertexArray(VAO[0]);
+glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+glBufferData(GL_ARRAY_BUFFER, sizeof(first2tris), first2tris, GL_STATIC_DRAW);
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+glEnableVertexAttribArray(0);
+// -------------------------------------
+// SECOND VERTEX BUFFER STORED IN VERTEX ARRAY
+// -------------------------------------
+glBindVertexArray(VAO[1]);
+glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+glBufferData(GL_ARRAY_BUFFER, sizeof(second2tris), second2tris, GL_STATIC_DRAW);
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0); // we can use 0 in 5th argument
+// forcing opengl to attempt to resolve the stride size automatically.
+glEnableVertexAttribArray(0);
+// -------------------------------------
+
+// E L E M E N T  B U F F E R
+// -------------------------------------
+// -------------------------------------
+//unsigned int EBO;
+//glGenBuffers(1, &EBO);
+//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(topTris), topTris, GL_STATIC_DRAW);
+// -------------------------------------
+// -------------------------------------
+
+// C O N F I G U R E  V E R T E X  A T T R I B U T E S
+// -------------------------------------
+// -------------------------------------
+// operates on the GL_ARRAY_BUFFER target (currently VBO[0])
+//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+//glEnableVertexAttribArray(0);
+// color attribute
+//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+//glEnableVertexAttribArray(1);
+
+
+// R E N D E R I N G
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+while (!glfwWindowShouldClose(window))
+{
+	// handle input
+	Input::processInput(window);
+
+	// renders commands here
+
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	color_cycle_green(shaderProg);
+
+	// draw with first VAO
 	glBindVertexArray(VAO[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(first2tris), first2tris, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	// -------------------------------------
-	// SECOND VERTEX BUFFER STORED IN VERTEX ARRAY
-	// -------------------------------------
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	color_cycle_red(shaderProg);
+		
+
+	// draw w second VAO
 	glBindVertexArray(VAO[1]);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(second2tris), second2tris, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0); // we can use 0 in 5th argument
-	// forcing opengl to attempt to resolve the stride size automatically.
-	glEnableVertexAttribArray(0);
-	// -------------------------------------
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 
-	// E L E M E N T  B U F F E R
-	// -------------------------------------
-	// -------------------------------------
-	//unsigned int EBO;
-	//glGenBuffers(1, &EBO);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(topTris), topTris, GL_STATIC_DRAW);
-	// -------------------------------------
-	// -------------------------------------
+	translate(shaderProg);
 
-	// C O N F I G U R E  V E R T E X  A T T R I B U T E S
-	// -------------------------------------
-	// -------------------------------------
-	// operates on the GL_ARRAY_BUFFER target (currently VBO[0])
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	//glEnableVertexAttribArray(0);
-	// color attribute
-	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	//glEnableVertexAttribArray(1);
-
-	// R E N D E R I N G
-	// -----------------------------------------------------------------------------
-	// -----------------------------------------------------------------------------
-	while (!glfwWindowShouldClose(window))
-	{
-		// handle input
-		Input::processInput(window);
-
-		// renders commands here
-		
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		
-		
-		color_cycle_green(shaderProg);
-
-		// draw with first VAO
-		glBindVertexArray(VAO[0]);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-
-		color_cycle_red(shaderProg);
+	glBindVertexArray(0); // note this is a call to unbind
 		
 
-		// draw w second VAO
-		glBindVertexArray(VAO[1]);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-
-
-		glBindVertexArray(0); // note this is a call to unbind
-		
-
-		// check event loop and swap buffers
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+	// check event loop and swap buffers
+	glfwSwapBuffers(window);
+	glfwPollEvents();
 
 	}
 
