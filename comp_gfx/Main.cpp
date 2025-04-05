@@ -34,7 +34,7 @@ void translate(unsigned int& shaderProgram)
 	static float scale = 0.0f;
 	static float delta = 0.005f;
 	scale += delta;
-	if ((scale >= 1.0f) || (scale <= -1.0f))
+	if ((scale >= 0.3f) || (scale <= -0.6f))
 	{
 		delta *= -1.0f;
 	}
