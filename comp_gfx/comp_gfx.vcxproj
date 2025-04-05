@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="FragIO.fs.glsl" />
+    <None Include="Translator.vs.glsl" />
     <None Include="VertexIO.vs.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
