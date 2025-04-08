@@ -159,6 +159,7 @@
     <Image Include="..\bigLTriangles.png" />
     <Image Include="..\drawing_a_rectangle.png" />
     <Image Include="..\Resouces\drawing_a_rectangle.png" />
+    <Image Include="..\rotations.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="FragIO.fs.glsl" />

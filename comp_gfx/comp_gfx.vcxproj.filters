@@ -52,6 +52,9 @@
     <Image Include="..\Resouces\drawing_a_rectangle.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\rotations.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="VertexIO.vs.glsl">
@@ -63,5 +66,6 @@
     <None Include="Translator.vs.glsl">
       <Filter>Shader Source Files</Filter>
     </None>
+    <None Include="Notes.md" />
   </ItemGroup>
 </Project>

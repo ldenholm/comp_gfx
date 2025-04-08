@@ -51,12 +51,12 @@ void translate(unsigned int& shaderProgram)
 
 void rotate(unsigned int& shaderProgram)
 {
-	static float scale = 0.0f;
-	static float delta = 0.005f;
-	scale += delta;
-	if ((scale >= 0.3f) || (scale <= -0.6f))
+	static float angleRadians = 0.0f;
+	static float beta = 0.01f;
+	angleRadians += beta;
+	if ((angleRadians >= 3.14f) || (angleRadians <= -3.14f))
 	{
-		delta *= -1.0f;
+		beta *= -1.0f;
 	}
 	glm::mat4 rotationMatrix = glm::mat4(1.0f);
 	// this rotation matrix is anchored to the x axis
@@ -83,13 +83,20 @@ void rotate(unsigned int& shaderProgram)
 		x1*cos(b) - y1*sin(b)
 		x1*sin(b) + y1*cos(b)
 
-		recognize RM structure where R is rotation matrix acting on M our current matrix
-		[cos(b) -sin(b) 0 0]	 [x 0 0 0 ]
-		|sin(b)  cos(b) 0 0|   x |0 y 0 0 |
-		|0          0   1 0|	 |0 0 z 0 |
-		[0          0   0 1]	 [0 0 0 w ]
+		recognize RM structure where R is rotation matrix acting on M our current position
+		[cos(b) -sin(b) 0 0]	 [x 0 0 0]
+		|sin(b)  cos(b) 0 0|  x  |0 y 0 0|
+		|0          0   1 0|	 |0 0 z 0|
+		[0          0   0 1]	 [0 0 0 w]
 	
 	*/
+	rotationMatrix[0][0] = cosf(angleRadians);
+	rotationMatrix[0][1] = -sinf(angleRadians);
+	rotationMatrix[1][0] = sinf(angleRadians);
+	rotationMatrix[1][1] = cosf(angleRadians);
+	GLint gTranslationLocation = glGetUniformLocation(shaderProgram, "gTranslation");
+	glUseProgram(shaderProgram);
+	glUniformMatrix4fv(gTranslationLocation, 1, GL_FALSE, &rotationMatrix[0][0]);
 }
 
 // Normalized Device Coordinates (NDC)
@@ -266,8 +273,9 @@ while (!glfwWindowShouldClose(window))
 	glBindVertexArray(VAO[1]);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
-	translate(shaderProg);
-
+	//translate(shaderProg);
+	// one takes precedence, need to properly implement transformation combinations
+	rotate(shaderProg);
 	glBindVertexArray(0); // note this is a call to unbind
 		
 
