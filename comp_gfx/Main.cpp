@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Input.h"
 #include "Shaders.h"
+#include "Transformations.h"
 #include "glm/glm.hpp"
 
 
@@ -27,76 +28,6 @@ void color_cycle_red(unsigned int& shaderProgram)
 	int vertexColorLoc = glGetUniformLocation(shaderProgram, "dynamicColor");
 	glUseProgram(shaderProgram);
 	glUniform4f(vertexColorLoc, (freq + 0.1f), (freq - 0.6f), (freq - 0.9f), 0.4f);
-}
-
-// todo: put transformations into their own .h/.cpp
-
-void translate(unsigned int& shaderProgram)
-{
-	static float scale = 0.0f;
-	static float delta = 0.005f;
-	scale += delta;
-	if ((scale >= 0.3f) || (scale <= -0.6f))
-	{
-		delta *= -1.0f;
-	}
-	glm::mat4 translationMatrix = glm::mat4(1.0f);
-	translationMatrix[0][3] = scale * 2; // x axis translation
-	translationMatrix[1][3] = scale; // y axis translation
-	GLint gTranslationLocation = glGetUniformLocation(shaderProgram, "gTranslation");
-	glUseProgram(shaderProgram);
-	glUniformMatrix4fv(gTranslationLocation, 1, GL_FALSE, &translationMatrix[0][0]);
-
-}
-
-void rotate(unsigned int& shaderProgram)
-{
-	static float angleRadians = 0.0f;
-	static float beta = 0.01f;
-	angleRadians += beta;
-	if ((angleRadians >= 3.14f) || (angleRadians <= -3.14f))
-	{
-		beta *= -1.0f;
-	}
-	glm::mat4 rotationMatrix = glm::mat4(1.0f);
-	// this rotation matrix is anchored to the x axis
-	// let R be a rotation matrix, R in R^(4x4) since we account for z axis and w column
-	/*
-	*	note a = current angle, b is desired angle, (x1, y1) = current coords, (x2, y2) = desired coords.
-		
-		use angle sum identity:
-		sin(a + b) = sin(a)cos(b) + cos(a)sin(b)
-		cos(a + b) = cos(a)cos(b) - sin(a)sin(b)
-
-		for unit circle note:
-		sin(a) = opp/hyp = opp/1 = opp = y1
-		cos(a) = adj/hyp = adj/1 = adj = x1
-
-		cos(a + b) = x2
-		sin(a + b) = y2
-
-		putting it all together:
-		x2 = y1*cos(b) + x1*sin(b)
-		y2 = x1*cos(b) - y1*sin(b)
-
-		reorder:
-		x1*cos(b) - y1*sin(b)
-		x1*sin(b) + y1*cos(b)
-
-		recognize Ax = b structure where R is rotation matrix acting on b our current position
-		[cos(b) -sin(b) 0 0]	 [x]
-		|sin(b)  cos(b) 0 0|  x  |y|
-		|0          0   1 0|	 |z|
-		[0          0   0 1]	 [w]
-	
-	*/
-	rotationMatrix[0][0] = cosf(angleRadians);
-	rotationMatrix[0][1] = -sinf(angleRadians);
-	rotationMatrix[1][0] = sinf(angleRadians);
-	rotationMatrix[1][1] = cosf(angleRadians);
-	GLint gTranslationLocation = glGetUniformLocation(shaderProgram, "gTranslation");
-	glUseProgram(shaderProgram);
-	glUniformMatrix4fv(gTranslationLocation, 1, GL_FALSE, &rotationMatrix[0][0]);
 }
 
 // Normalized Device Coordinates (NDC)
@@ -273,9 +204,9 @@ while (!glfwWindowShouldClose(window))
 	glBindVertexArray(VAO[1]);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
-	//translate(shaderProg);
+	//Transformations::translate(shaderProg);
 	// one takes precedence, need to properly implement transformation combinations
-	rotate(shaderProg);
+	Transformations::rotate(shaderProg);
 	glBindVertexArray(0); // note this is a call to unbind
 		
 
