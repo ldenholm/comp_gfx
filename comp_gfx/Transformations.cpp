@@ -87,3 +87,44 @@ void Transformations::scale(GLuint& shaderProgram, float_t lower, float_t upper)
 	glUniformMatrix4fv(gTranslationLocation, 1, GL_FALSE, &scaleMatrix[0][0]);
 }
 
+void Transformations::s_r_t(GLuint& shaderProgram)
+{
+	// Note we apply transformation left to right: RotateTranslateScale
+	// note this is only a translate and rotate:
+	// translate
+	static float scale = 0.0f;
+	static float delta = 0.005f;
+	scale += delta;
+	if ((scale >= 0.3f) || (scale <= -0.6f))
+	{
+		delta *= -1.0f;
+	}
+	glm::mat4 translationMatrix = glm::mat4(1.0f);
+	translationMatrix[0][3] = scale * 2; // x axis translation
+	translationMatrix[1][3] = scale; // y axis translation
+	
+
+	// rotate
+
+	static float angleRadians = 0.0f;
+	static float beta = 0.01f;
+	angleRadians += beta;
+	if ((angleRadians >= 3.14f) || (angleRadians <= -3.14f))
+	{
+		beta *= -1.0f;
+	}
+	glm::mat4 rotationMatrix = glm::mat4(1.0f);
+	
+	rotationMatrix[0][0] = cosf(angleRadians);
+	rotationMatrix[0][1] = -sinf(angleRadians);
+	rotationMatrix[1][0] = sinf(angleRadians);
+	rotationMatrix[1][1] = cosf(angleRadians);
+
+	// resultant matrix
+	glm::mat4 linearTransform = rotationMatrix * translationMatrix;
+	
+	GLint gTranslationLocation = glGetUniformLocation(shaderProgram, "gTranslation");
+	glUseProgram(shaderProgram);
+	glUniformMatrix4fv(gTranslationLocation, 1, GL_FALSE, &linearTransform[0][0]);
+
+}
