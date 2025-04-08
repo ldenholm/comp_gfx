@@ -83,11 +83,11 @@ void rotate(unsigned int& shaderProgram)
 		x1*cos(b) - y1*sin(b)
 		x1*sin(b) + y1*cos(b)
 
-		recognize Ax = b structure:
-		[cos(b) -sin(b) 0 0]	 [x]
-		|sin(b)  cos(b) 0 0|   x |y|
-		|0          0   1 0|	 |z|
-		[0          0   0 1]	 [w]
+		recognize RM structure where R is rotation matrix acting on M our current matrix
+		[cos(b) -sin(b) 0 0]	 [x 0 0 0 ]
+		|sin(b)  cos(b) 0 0|   x |0 y 0 0 |
+		|0          0   1 0|	 |0 0 z 0 |
+		[0          0   0 1]	 [0 0 0 w ]
 	
 	*/
 }
