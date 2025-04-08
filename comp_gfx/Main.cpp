@@ -207,7 +207,7 @@ while (!glfwWindowShouldClose(window))
 	//Transformations::translate(shaderProg);
 	// one takes precedence, need to properly implement transformation combinations
 	//Transformations::rotate(shaderProg);
-	Transformations::scale(shaderProg, 0.2f);
+	Transformations::scale(shaderProg, 0.001f, 1.2f);
 	glBindVertexArray(0); // note this is a call to unbind
 		
 
