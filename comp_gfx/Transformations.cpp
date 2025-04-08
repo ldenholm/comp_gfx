@@ -69,3 +69,21 @@ void Transformations::translate(GLuint& shaderProgram)
 	glUniformMatrix4fv(gTranslationLocation, 1, GL_FALSE, &translationMatrix[0][0]);
 }
 
+void Transformations::scale(GLuint& shaderProgram, float_t scaleFactor)
+{
+	static float scale = 0.0f;
+	static float delta = 0.01f;
+	scale += delta;
+	if ((scale <= 0.001f) || (scale >= 0.8f))
+	{
+		delta *= -1.0f;
+	}
+
+	glm::mat4 scaleMatrix = glm::mat4(scaleFactor);
+	GLint gTranslationLocation = glGetUniformLocation(shaderProgram, "gTranslation");
+	scaleMatrix[0][0] = scale;
+	scaleMatrix[1][1] = scale; // only need to scale x and y axes.
+	glUseProgram(shaderProgram);
+	glUniformMatrix4fv(gTranslationLocation, 1, GL_FALSE, &scaleMatrix[0][0]);
+}
+
