@@ -178,9 +178,11 @@ void Transformations::projection(GLuint& shaderProgram)
 	   P'_x is given in terms of P: (P_x * d) / P_z = x / z * tan(alpha/2).
 	*/
 
-	glm::mat4 translation = glm::mat4(1.0f);
-	//translation[2][2] = 2.0f;
-
+	// here we create an identity mat4 and multiply it by a vec3 specifying -2 for the z coords.
+	// note that even though mat4 is multipling a vec3 the vec3 is treated as a vec4 inserting 1.0f
+	// into the 4th row.
+	glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.0f));
+	
 	//float alphaRads = 90.0f * (std::numbers::pi / 180);
 	//float tanHalfAlpha = tanf(alphaRads / 2.0f);
 	//float d = 1/tanHalfAlpha;
@@ -196,9 +198,14 @@ void Transformations::projection(GLuint& shaderProgram)
 
 	//glm::mat4 transform = projection * rotation * translation;
 	// note higher value of 'near' = box further away
+	// consider we are at (0, 0, 0) so we must move the object down the z-axis in the negative direction.
+	// therefore z must be in (-100, -0.1) to avoid clipping
+	glm::mat4 projection = glm::perspective(glm::radians(90.0f), (4.0f / 3.0f), 0.1f, 50.0f);
+
+	//glm::mat4 transform = projection * rotation * translation;
 	
-	glm::mat4 projection = glm::perspective(glm::radians(90.0f), (4.0f / 3.0f), 3.0f, 50.0f);
-	glm::mat4 transform = projection * rotation * translation;
+	glm::mat4 transform = projection * translation * rotation;
+	
 	GLint gTranslationLocation = glGetUniformLocation(shaderProgram, "gTranslation");
 	glUseProgram(shaderProgram);
 	glUniformMatrix4fv(gTranslationLocation, 1, GL_FALSE, &transform[0][0]);
