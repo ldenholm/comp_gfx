@@ -5,6 +5,10 @@
 #include "Shaders.h"
 #include "Transformations.h"
 #include "glm/glm.hpp"
+#include "assimp/Importer.hpp"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
+#include "Mesh.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int w, int h)
@@ -179,7 +183,11 @@ int main()
 
 
 	// L O A D  O B J E C T
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile("blender/Projeto.obj", 
+		aiProcess_Triangulate | aiProcess_FlipUVs);
 
+	//Mesh mesh(scene);
 
 	// R E N D E R I N G
 	// -----------------------------------------------------------------------------
