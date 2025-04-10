@@ -158,11 +158,10 @@ void Transformations::projection(GLuint& shaderProgram)
 
 	static float scale = 0.0f;
 	scale += 0.01;
-	glm::mat4 rotation = glm::mat4(1.0f);
-	rotation[0][0] = cosf(scale);
-	rotation[0][2] = -sinf(scale);
-	rotation[2][0] = sinf(scale);
-	rotation[2][2] = cosf(scale);
+
+	// refactor to use glm::rotate, simply supply identity, angle, and vec3 targetting y axis.
+	// swap sign of y-axis to change direction of rotation.
+	glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), scale, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	/* The big idea here is that we are projecting a vector in from the world onto a viewport
 	   to create 3d perspective. We are projecting a vector in R^3 onto R^2.
@@ -200,10 +199,7 @@ void Transformations::projection(GLuint& shaderProgram)
 	// note higher value of 'near' = box further away
 	// consider we are at (0, 0, 0) so we must move the object down the z-axis in the negative direction.
 	// therefore z must be in (-100, -0.1) to avoid clipping
-	glm::mat4 projection = glm::perspective(glm::radians(90.0f), (4.0f / 3.0f), 0.1f, 50.0f);
-
-	//glm::mat4 transform = projection * rotation * translation;
-	
+	glm::mat4 projection = glm::perspective(glm::radians(90.0f), (4.0f / 3.0f), 0.1f, 50.0f);	
 	glm::mat4 transform = projection * translation * rotation;
 	
 	GLint gTranslationLocation = glGetUniformLocation(shaderProgram, "gTranslation");
