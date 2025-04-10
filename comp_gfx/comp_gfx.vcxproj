@@ -160,6 +160,10 @@
   <ItemGroup>
     <Image Include="..\bigLTriangles.png" />
     <Image Include="..\drawing_a_rectangle.png" />
+    <Image Include="..\perspective.png" />
+    <Image Include="..\perspective_coord_eqs.png" />
+    <Image Include="..\perspective_d.png" />
+    <Image Include="..\perspective_right.png" />
     <Image Include="..\Resouces\drawing_a_rectangle.png" />
     <Image Include="..\rotations.png" />
   </ItemGroup>

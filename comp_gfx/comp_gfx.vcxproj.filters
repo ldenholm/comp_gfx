@@ -61,6 +61,18 @@
     <Image Include="..\rotations.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\perspective.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\perspective_right.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\perspective_coord_eqs.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\perspective_d.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="VertexIO.vs.glsl">
