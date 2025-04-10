@@ -2,7 +2,6 @@
 #include <glad/glad.h>
 #include <vector>
 
-
 class Shaders {
 	public:
 		static GLuint compile_and_create_shader(GLenum shaderType, const char* shaderSrcPath, GLuint& shader);
