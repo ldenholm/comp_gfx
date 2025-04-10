@@ -1,8 +1,10 @@
 #include "glad/glad.h"
 #include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 #include "Transformations.h"
+#include <numbers>
 
-void Transformations::rotate(GLuint& shaderProgram)
+void Transformations::rotate_x(GLuint& shaderProgram)
 {
 	static float angleRadians = 0.0f;
 	static float beta = 0.01f;
@@ -127,4 +129,77 @@ void Transformations::s_r_t(GLuint& shaderProgram)
 	glUseProgram(shaderProgram);
 	glUniformMatrix4fv(gTranslationLocation, 1, GL_FALSE, &linearTransform[0][0]);
 
+}
+
+void Transformations::identity(GLuint& shaderProgram)
+{
+	glm::mat4 identityMatrix = glm::mat4(1.0f);
+	GLint gTranslationLocation = glGetUniformLocation(shaderProgram, "gTranslation");
+	glUseProgram(shaderProgram);
+	glUniformMatrix4fv(gTranslationLocation, 1, GL_FALSE, &identityMatrix[0][0]);
+}
+
+void Transformations::rotate_y(GLuint& shaderProgram)
+{
+	static float scale = 0.0f;
+	scale += 0.01;
+	glm::mat4 R = glm::mat4(1.0f);
+	R[0][0] = cosf(scale);
+	R[0][2] = -sinf(scale);
+	R[2][0] = sinf(scale);
+	R[2][2] = cosf(scale);
+	GLint gTranslationLocation = glGetUniformLocation(shaderProgram, "gTranslation");
+	glUseProgram(shaderProgram);
+	glUniformMatrix4fv(gTranslationLocation, 1, GL_FALSE, &R[0][0]);
+}
+
+void Transformations::projection(GLuint& shaderProgram)
+{
+
+	static float scale = 0.0f;
+	scale += 0.01;
+	glm::mat4 rotation = glm::mat4(1.0f);
+	rotation[0][0] = cosf(scale);
+	rotation[0][2] = -sinf(scale);
+	rotation[2][0] = sinf(scale);
+	rotation[2][2] = cosf(scale);
+
+	/* The big idea here is that we are projecting a vector in from the world onto a viewport
+	   to create 3d perspective. We are projecting a vector in R^3 onto R^2.
+
+	   Note we fix camera to origin (0,0,0).
+
+	   See perspective.png to get the idea. We are interested in finding P' which represents
+	   P's location in the viewport.
+	   Note: P_x = x, P_y = y, P_z = z.
+			 alpha = field of view (FOV) in deg.
+	   P'_z = d, the distance along z-axis to the viewport plane.
+	   P'_y is given in terms of P: (P_y * d) / P_z = y / z * tan(alpha/2).
+	   P'_x is given in terms of P: (P_x * d) / P_z = x / z * tan(alpha/2).
+	*/
+
+	glm::mat4 translation = glm::mat4(1.0f);
+	//translation[2][2] = 2.0f;
+
+	//float alphaRads = 90.0f * (std::numbers::pi / 180);
+	//float tanHalfAlpha = tanf(alphaRads / 2.0f);
+	//float d = 1/tanHalfAlpha;
+
+	//glm::mat4 projection = glm::mat4(1.0f);
+	//projection[0][0] = d;
+	//projection[1][1] = d;
+	//projection[3][2] = 1.0f;
+	//projection[3][3] = 0.0f;
+
+	//glm::mat4 transform_first = glm::matrixCompMult(rotation, translation);
+	//glm::mat4 transform_final = glm::matrixCompMult(transform_first, projection);
+
+	//glm::mat4 transform = projection * rotation * translation;
+	// note higher value of 'near' = box further away
+	
+	glm::mat4 projection = glm::perspective(glm::radians(90.0f), (4.0f / 3.0f), 3.0f, 50.0f);
+	glm::mat4 transform = projection * rotation * translation;
+	GLint gTranslationLocation = glGetUniformLocation(shaderProgram, "gTranslation");
+	glUseProgram(shaderProgram);
+	glUniformMatrix4fv(gTranslationLocation, 1, GL_FALSE, &transform[0][0]);
 }
