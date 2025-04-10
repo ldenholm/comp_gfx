@@ -30,10 +30,6 @@ void color_cycle_red(unsigned int& shaderProgram)
 	glUniform4f(vertexColorLoc, (freq + 0.1f), (freq - 0.6f), (freq - 0.9f), 0.4f);
 }
 
-void perspective_projection(unsigned int& shaderProgram)
-{
-}
-
 // Normalized Device Coordinates (NDC)
 // viewport transforms these to screen-space coords.
 
