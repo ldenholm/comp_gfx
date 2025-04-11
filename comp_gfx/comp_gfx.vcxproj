@@ -147,11 +147,13 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="Transformations.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Transformations.h" />

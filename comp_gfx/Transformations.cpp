@@ -89,6 +89,18 @@ void Transformations::scale(GLuint& shaderProgram, float_t lower, float_t upper)
 	glUniformMatrix4fv(gTranslationLocation, 1, GL_FALSE, &scaleMatrix[0][0]);
 }
 
+void Transformations::scaleByX(GLuint& shaderProgram, float_t X)
+{
+	// do some bounds checking x in [reasonableLower, reasonableUpper]
+
+	glm::mat4 scaleMatrix = glm::mat4(1.0f);
+	GLint gTranslationLocation = glGetUniformLocation(shaderProgram, "gTranslation");
+	scaleMatrix[0][0] = X;
+	scaleMatrix[1][1] = X; // only need to scale x and y axes.
+	glUseProgram(shaderProgram);
+	glUniformMatrix4fv(gTranslationLocation, 1, GL_FALSE, &scaleMatrix[0][0]);
+}
+
 void Transformations::s_r_t(GLuint& shaderProgram)
 {
 	// Note we apply transformation left to right: RotateTranslateScale
@@ -159,6 +171,9 @@ void Transformations::projection(GLuint& shaderProgram)
 	static float scale = 0.0f;
 	scale += 0.01;
 
+	// scale so its smaller
+	glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
+
 	// refactor to use glm::rotate, simply supply identity, angle, and vec3 targetting y axis.
 	// swap sign of y-axis to change direction of rotation.
 	glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), scale, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -180,7 +195,7 @@ void Transformations::projection(GLuint& shaderProgram)
 	// here we create an identity mat4 and multiply it by a vec3 specifying -2 for the z coords.
 	// note that even though mat4 is multipling a vec3 the vec3 is treated as a vec4 inserting 1.0f
 	// into the 4th row.
-	glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.0f));
+	glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -6.0f));
 	
 	//float alphaRads = 90.0f * (std::numbers::pi / 180);
 	//float tanHalfAlpha = tanf(alphaRads / 2.0f);
@@ -199,8 +214,8 @@ void Transformations::projection(GLuint& shaderProgram)
 	// note higher value of 'near' = box further away
 	// consider we are at (0, 0, 0) so we must move the object down the z-axis in the negative direction.
 	// therefore z must be in (-100, -0.1) to avoid clipping
-	glm::mat4 projection = glm::perspective(glm::radians(90.0f), (4.0f / 3.0f), 0.1f, 50.0f);	
-	glm::mat4 transform = projection * translation * rotation;
+	glm::mat4 projection = glm::perspective(glm::radians(90.0f), (4.0f / 3.0f), 2.0f, 50.0f);	
+	glm::mat4 transform = projection * translation * rotation * scaleMat;
 	
 	GLint gTranslationLocation = glGetUniformLocation(shaderProgram, "gTranslation");
 	glUseProgram(shaderProgram);

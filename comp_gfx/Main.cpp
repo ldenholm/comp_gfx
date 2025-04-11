@@ -9,6 +9,8 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 #include "Mesh.h"
+#include "Model.h"
+#include "filesystem"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int w, int h)
@@ -126,9 +128,9 @@ int main()
 
 	glViewport(0, 0, 800, 600);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glEnable(GL_CULL_FACE);
-	glFrontFace(GL_CW);
-	glCullFace(GL_BACK);
+	//glEnable(GL_CULL_FACE);
+	//glFrontFace(GL_CW);
+	//glCullFace(GL_BACK);
 	// -----------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------
 	
@@ -155,7 +157,7 @@ int main()
 	// V E R T E X  B U F F E R
 	// -------------------------------------
 	// -------------------------------------
-	unsigned int VBO, VAO, EBO;
+	/*unsigned int VBO, VAO, EBO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
@@ -163,7 +165,7 @@ int main()
 
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices), cube_vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices), cube_vertices, GL_STATIC_DRAW);*/
 	// -------------------------------------
 	// -------------------------------------
 
@@ -171,23 +173,18 @@ int main()
 	// -------------------------------------
 	// -------------------------------------
 
-	//unsigned int IBO;
-	//glGenBuffers(1, &IBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cube_indices), cube_indices, GL_STATIC_DRAW);
+	
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cube_indices), cube_indices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+	//glEnableVertexAttribArray(0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindVertexArray(0);
 
 
-	// L O A D  O B J E C T
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile("blender/Projeto.obj", 
-		aiProcess_Triangulate | aiProcess_FlipUVs);
-
-	//Mesh mesh(scene);
+	// L O A D  M O D E L
+	Model model("blender/Projeto.obj");
 
 	// R E N D E R I N G
 	// -----------------------------------------------------------------------------
@@ -201,17 +198,21 @@ int main()
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+		glUseProgram(shaderProg);
+		model.Draw();
+		//Transformations::scale(shaderProg, 0.001f, 1.2f);
+		//Transformations::scaleByX(shaderProg, 0.2f);
+		Transformations::projection(shaderProg);
 
 		color_cycle_green(shaderProg);
 
-		// draw with first VAO
-		//glBindVertexArray(VAO);
-		//glDrawArrays(GL_TRIANGLES, 0, 6);
-		//glEnableVertexAttribArray(0);
-		glBindVertexArray(VAO);	
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		//color_cycle_green(shaderProg);
 
-		Transformations::projection(shaderProg);
+		//glBindVertexArray(VAO);	
+		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+		//Transformations::projection(shaderProg);
+		//Transformations::identity(shaderProg);
 
 		//color_cycle_red(shaderProg);
 
@@ -230,9 +231,9 @@ int main()
 	}
 
 	// free resources
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
+	//glDeleteVertexArrays(1, &VAO);
+	//glDeleteBuffers(1, &VBO);
+	//glDeleteBuffers(1, &EBO);
 	glDeleteProgram(shaderProg);
 	// E N D
 	// -----------------------------------------------------------------------------
